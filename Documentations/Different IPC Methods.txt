@@ -1,0 +1,35 @@
+Different IPC Methods
+1. Pipes
+- Simple and easy to use.
+- Used to transfer data between processes.
+- Mainly used between related processes.
+- Communication is usually one-way.
+- Example: Sending the output of one process to another.
+2. Message Queues
+- Processes communicate by sending and receiving messages.
+- Messages are stored in a queue until the receiving process is ready.
+- Supports asynchronous communication.
+- Example: Background task processing.
+3. Shared Memory
+- A common memory area is shared between multiple processes.
+- Processes can directly access the shared data.
+- Provides very fast communication.
+- Synchronization is required to avoid conflicts.
+- Example: Sharing large amounts of data in multimedia applications.
+4. Sockets
+- Allow processes to communicate on the same computer or across a network.
+- Commonly used in client-server applications.
+- Can use protocols such as TCP and UDP.
+- Example: Web browsers communicating with web servers.
+5. Signals
+- Used to notify a process that an event has occurred.
+- Mainly used for simple notifications.
+- Does not normally transfer large amounts of data.
+- Example: Sending an interrupt or terminating a process.
+6. Semaphores
+- Mainly used for process synchronization.
+- Controls access to shared resources.
+- Prevents multiple processes from accessing a resource incorrectly.
+- Example: Controlling access to shared memory or files.
+Conclusion
+IPC methods allow processes to communicate, exchange data, and synchronize their activities. The appropriate method depends on the type of communication and the requirements of the application.
