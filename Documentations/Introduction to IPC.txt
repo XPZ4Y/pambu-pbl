@@ -1,0 +1,9 @@
+Introduction
+
+Inter-Process Communication (IPC) is a mechanism that allows two or more processes to communicate and exchange data with each other. In an operating system, processes usually execute independently, but many applications require them to share information, coordinate their activities, and synchronize their execution.
+
+IPC provides a way for processes to communicate safely and efficiently. It is especially important in multitasking and distributed systems, where multiple processes may need to work together to complete a task.
+
+There are several techniques used for Inter-Process Communication, including pipes, message queues, shared memory, semaphores, and sockets. Each technique has its own method of communication and is suitable for different situations.
+
+The study of IPC and its techniques helps in understanding how operating systems manage communication, synchronization, and resource sharing between processes. It also plays an important role in developing efficient and reliable applications.
