@@ -1,17 +1,32 @@
-# pambu (team name)
-A PBL project implementationn
+# pambu
 
-<p>Team members</p>
+A PBL project implementing a multi-process CPU emulator with a message-queue based architecture.
+
+## Team
 
 - Madiha
 - Falah
-- Misba 
+- Misba
 - Ruben
 - Chris
 
-## Current status: Week 2
+## Demo
 
-- Implementing core cpu process emulation
-- Logger process that listens for communication from *Core*
-- UI that communicates with THE *core process*
-- Testing files & documentations
+**CPU Core**
+
+![CPU Core](Assets/corec.png)
+
+**Logger**
+
+![Logger](Assets/loggerc.png)
+
+**User Interface**
+
+![User Interface](Assets/userinterface.png)
+
+## Week 2 Status
+
+- Core CPU process emulation
+- Logger process listening for messages from the *core*
+- UI communicating with the *core* process
+- Test files and documentation
