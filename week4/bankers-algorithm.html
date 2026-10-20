@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Banker’s Algorithm Explained</title>
+<style>
+:root{--bg:#faf8f4;--surface:#fff;--text:#1f2328;--muted:#5c6470;--line:#e2ddd3;--accent:#1d6b5a;--accent-bg:#e3f2ee;--warn:#b4531a;--warn-bg:#fbeadd;--ok:#1d6b5a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181b;--surface:#1e2226;--text:#e8e6e1;--muted:#9aa3ad;--line:#33393f;--accent:#5fc2a8;--accent-bg:#1b3a33;--warn:#f0a068;--warn-bg:#3d2a1b;--ok:#5fc2a8;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#15181b;--surface:#1e2226;--text:#e8e6e1;--muted:#9aa3ad;--line:#33393f;--accent:#5fc2a8;--accent-bg:#1b3a33;--warn:#f0a068;--warn-bg:#3d2a1b;--ok:#5fc2a8;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:17px/1.65 Georgia,"Times New Roman",serif}
+main{max-width:760px;margin:0 auto;padding:32px 20px 64px}
+h1{font-size:2.1rem;line-height:1.2;margin:0 0 8px}
+h2{font-size:1.4rem;margin:44px 0 8px;padding-top:8px;border-top:1px solid var(--line)}
+p{margin:10px 0}
+.lede{color:var(--muted);font-size:1.1rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:16px 0}
+.analogy{background:var(--accent-bg);border-color:transparent}
+code,.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.9em}
+code{background:var(--accent-bg);padding:1px 6px;border-radius:4px}
+ol,ul{padding-left:1.3em}li{margin:6px 0}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88rem;text-align:center}
+th,td{border:1px solid var(--line);padding:6px 10px;white-space:nowrap}
+th{background:var(--accent-bg)}
+tr.done td{opacity:.5;text-decoration:line-through}
+tr.pick td{background:var(--accent-bg);font-weight:bold}
+tr.bad td{background:var(--warn-bg)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+button{font:inherit;font-size:.95rem;padding:8px 16px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+button.alt{background:transparent;color:var(--accent)}
+button:disabled{opacity:.4;cursor:default}
+#log{font-size:.95rem;min-height:3em}
+#log div{padding:4px 0;border-bottom:1px dashed var(--line)}
+.pill{display:inline-block;padding:2px 10px;border-radius:99px;background:var(--accent-bg);color:var(--ok);font-family:ui-monospace,monospace;font-size:.9rem}
+.pill.bad{background:var(--warn-bg);color:var(--warn)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:600px){.two{grid-template-columns:1fr}h1{font-size:1.7rem}}
+</style>
+</head>
+<body>
+<main>
+<h1>Banker’s Algorithm</h1>
+<p class="lede">Banker’s algorithm is a way of avoiding deadlock. Dijkstra came up with it. The rule is simple: a process only gets the resources it asks for if every process can still finish afterwards.</p>
+
+<div class="card analogy">
+<strong>Think of a bank.</strong> The bank has a fixed amount of cash and a few customers, each with a credit limit. Before approving a loan, the banker checks one thing: after this loan, can the customers still be served in some order so that each one reaches their limit, finishes and pays the money back? If there is no such order, the loan is refused, even though the bank has the cash right now.
+</div>
+
+<h2>1. Core idea: safe vs. unsafe</h2>
+<p>A state is <strong>safe</strong> if we can line the processes up in a <em>safe sequence</em> &lt;P<sub>a</sub>, P<sub>b</sub>, …&gt; where each process can get what it still needs from the free resources plus whatever the earlier processes give back when they finish. An <strong>unsafe</strong> state is not a deadlock yet, but it could turn into one. Banker’s algorithm just never lets the system go into an unsafe state.</p>
+
+<h2>2. Data structures</h2>
+<p>Say we have <code>n</code> processes and <code>m</code> resource types. We keep track of four things:</p>
+<ul>
+<li><code>Available[m]</code>: how many instances of each resource are free right now.</li>
+<li><code>Max[n][m]</code>: the maximum each process can ever ask for.</li>
+<li><code>Allocation[n][m]</code>: what each process is holding at the moment.</li>
+<li><code>Need[n][m] = Max − Allocation</code>: what each process might still ask for.</li>
+</ul>
+
+<h2>3. Safety algorithm</h2>
+<ol>
+<li>Set <code>Work = Available</code> and <code>Finish[i] = false</code> for all i.</li>
+<li>Find a process i with <code>Finish[i] = false</code> and <code>Need[i] ≤ Work</code>. If none exists, go to step 4.</li>
+<li>Assume it runs to completion and releases everything: <code>Work = Work + Allocation[i]</code>, <code>Finish[i] = true</code>. Go to step 2.</li>
+<li>If every <code>Finish[i]</code> is true, the state is <strong>safe</strong>. If not, it is <strong>unsafe</strong>.</li>
+</ol>
+
+<h2>4. Resource-request algorithm</h2>
+<p>When process P<sub>i</sub> makes a request <code>Request<sub>i</sub></code>, we do this:</p>
+<ol>
+<li>If <code>Request<sub>i</sub> &gt; Need[i]</code>, that is an error, because the process is asking for more than it said it would ever need.</li>
+<li>If <code>Request<sub>i</sub> &gt; Available</code>, P<sub>i</sub> has to wait because the resources are not there yet.</li>
+<li>Pretend to grant it: <code>Available −= Request</code>, <code>Allocation[i] += Request</code>, <code>Need[i] −= Request</code>.</li>
+<li>Run the safety algorithm on the new state. If it is safe, the grant stays. If not, undo it and P<sub>i</sub> waits.</li>
+</ol>
+
+<h2>5. Try it: step through a worked example</h2>
+<p>Here we have five processes and three resource types (A, B, C). Press <strong>Step</strong> to run the safety algorithm one round at a time and watch what happens.</p>
+<div class="card scroll">
+<table id="tbl"></table>
+</div>
+<div class="card">
+<div>Work (available): <span class="pill" id="work"></span> &nbsp; Sequence: <span class="pill" id="seq">–</span> &nbsp; <span class="pill" id="verdict" style="display:none"></span></div>
+<div class="btns">
+<button id="step">Step</button>
+<button id="all" class="alt">Run all</button>
+<button id="reset" class="alt">Reset</button>
+</div>
+<div id="log"></div>
+</div>
+
+<h2>6. Request check: can P1 ask for (1, 0, 2)?</h2>
+<p>You can test a request on the same starting state. Pick a process, enter the amounts and press check.</p>
+<div class="card">
+<div class="btns" style="align-items:center">
+<label>Process <select id="rp"></select></label>
+<label>A <input id="ra" type="number" min="0" value="1" style="width:56px"></label>
+<label>B <input id="rb" type="number" min="0" value="0" style="width:56px"></label>
+<label>C <input id="rc" type="number" min="0" value="2" style="width:56px"></label>
+<button id="rq">Check request</button>
+</div>
+<div id="rout"></div>
+</div>
+
+<h2>7. Strengths and limits</h2>
+<div class="two">
+<div class="card"><strong>Strengths</strong><ul><li>Avoids deadlock instead of fixing it after it happens.</li><li>Lets more processes run together than strict prevention rules do.</li></ul></div>
+<div class="card"><strong>Limits</strong><ul><li>Every process has to declare its maximum need in advance.</li><li>The number of processes and resources has to stay fixed.</li><li>Each safety check costs O(m·n²), and it can be too cautious sometimes.</li></ul></div>
+</div>
+</main>
+
+<script>
+(function(){
+var P=["P0","P1","P2","P3","P4"];
+var ALLOC=[[0,1,0],[2,0,0],[3,0,2],[2,1,1],[0,0,2]];
+var MAX=[[7,5,3],[3,2,2],[9,0,2],[2,2,2],[4,3,3]];
+var AVAIL=[3,3,2];
+function need(al,mx){return mx.map(function(r,i){return r.map(function(v,j){return v-al[i][j]})})}
+function le(a,b){return a.every(function(v,j){return v<=b[j]})}
+function add(a,b){return a.map(function(v,j){return v+b[j]})}
+function f(a){return "("+a.join(", ")+")"}
+var NEED=need(ALLOC,MAX);
+var work,finish,order,last,ended;
+function reset(){work=AVAIL.slice();finish=P.map(function(){return false});order=[];last=-1;ended=false;
+document.getElementById("log").innerHTML="";document.getElementById("verdict").style.display="none";render()}
+function render(){
+var h="<tr><th>Proc</th><th colspan=3>Allocation</th><th colspan=3>Max</th><th colspan=3>Need</th></tr><tr><th></th><th>A</th><th>B</th><th>C</th><th>A</th><th>B</th><th>C</th><th>A</th><th>B</th><th>C</th></tr>";
+P.forEach(function(p,i){var c=finish[i]?"done":(i===last?"pick":"");
+h+="<tr class='"+c+"'><td>"+p+"</td>"+ALLOC[i].concat(MAX[i],NEED[i]).map(function(v){return "<td>"+v+"</td>"}).join("")+"</tr>"});
+document.getElementById("tbl").innerHTML=h;
+document.getElementById("work").textContent=f(work);
+document.getElementById("seq").textContent=order.length?order.map(function(i){return P[i]}).join(" → "):"–";
+document.getElementById("step").disabled=ended;document.getElementById("all").disabled=ended}
+function log(t){var d=document.createElement("div");d.innerHTML=t;var l=document.getElementById("log");l.appendChild(d)}
+function step(){
+if(ended)return;
+var i=-1;for(var k=0;k<P.length;k++){if(!finish[k]&&le(NEED[k],work)){i=k;break}}
+var v=document.getElementById("verdict");
+if(i<0){ended=true;v.style.display="inline-block";
+if(finish.every(Boolean)){v.className="pill";v.textContent="SAFE";log("Every process has finished, so the state is <strong>safe</strong>.")}
+else{v.className="pill bad";v.textContent="UNSAFE";log("None of the remaining processes can be satisfied, so the state is <strong>unsafe</strong>.")}
+last=-1;render();return}
+log(P[i]+": Need "+f(NEED[i])+" ≤ Work "+f(work)+". It can finish, so Work becomes "+f(add(work,ALLOC[i]))+".");
+work=add(work,ALLOC[i]);finish[i]=true;order.push(i);last=i;
+if(finish.every(Boolean)){ended=true;var v2=document.getElementById("verdict");v2.style.display="inline-block";v2.className="pill";v2.textContent="SAFE";log("Every process has finished, so the state is <strong>safe</strong>.")}
+render()}
+document.getElementById("step").onclick=step;
+document.getElementById("all").onclick=function(){while(!ended)step()};
+document.getElementById("reset").onclick=reset;
+var sel=document.getElementById("rp");P.forEach(function(p,i){var o=document.createElement("option");o.value=i;o.textContent=p;if(i===1)o.selected=true;sel.appendChild(o)});
+function safe(av,al,nd){var w=av.slice(),fi=P.map(function(){return false}),seq=[],prog=true;
+while(prog){prog=false;for(var i=0;i<P.length;i++){if(!fi[i]&&le(nd[i],w)){w=add(w,al[i]);fi[i]=true;seq.push(P[i]);prog=true}}}
+return fi.every(Boolean)?seq:null}
+document.getElementById("rq").onclick=function(){
+var i=+sel.value,r=["ra","rb","rc"].map(function(id){return Math.max(0,parseInt(document.getElementById(id).value,10)||0)});
+var o=document.getElementById("rout"),m;
+if(!le(r,NEED[i]))m="<span class='pill bad'>ERROR</span> Request "+f(r)+" is more than "+P[i]+"’s remaining need "+f(NEED[i])+".";
+else if(!le(r,AVAIL))m="<span class='pill bad'>WAIT</span> Request "+f(r)+" exceeds Available "+f(AVAIL)+".";
+else{var av=AVAIL.map(function(v,j){return v-r[j]});
+var al=ALLOC.map(function(row,k){return k===i?add(row,r):row});
+var nd=NEED.map(function(row,k){return k===i?row.map(function(v,j){return v-r[j]}):row});
+var s=safe(av,al,nd);
+m=s?"<span class='pill'>GRANT</span> After granting, the state is still safe. One safe sequence is "+s.join(" → ")+".":"<span class='pill bad'>DENY</span> Granting this would leave no safe sequence, so "+P[i]+" has to wait."}
+o.innerHTML=m};
+reset();
+})();
+</script>
+</body>
+</html>
