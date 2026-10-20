@@ -1,0 +1,383 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 4 - Deadlocks in Operating Systems</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+            color: #222;
+        }
+
+        header {
+            background-color: #172554;
+            color: white;
+            text-align: center;
+            padding: 30px 15px;
+        }
+
+        main {
+            max-width: 950px;
+            margin: 25px auto;
+            padding: 25px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px #00000015;
+        }
+
+        h2 {
+            color: #1d4ed8;
+            border-bottom: 2px solid #dbeafe;
+            padding-bottom: 8px;
+            margin-top: 30px;
+        }
+
+        h3 {
+            color: #334155;
+        }
+
+        .example {
+            background-color: #eff6ff;
+            padding: 15px;
+            border-left: 5px solid #2563eb;
+            margin: 15px 0;
+        }
+
+        .warning {
+            background-color: #fff7ed;
+            padding: 15px;
+            border-left: 5px solid #ea580c;
+            margin: 15px 0;
+        }
+
+        pre {
+            background-color: #111827;
+            color: #e5e7eb;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        code {
+            font-family: Consolas, monospace;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #dbeafe;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #172554;
+            color: white;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 600px) {
+            main {
+                margin: 10px;
+                padding: 15px;
+            }
+
+            pre {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>WEEK 4: DEADLOCKS</h1>
+    <p>Operating Systems | Simulation Using C Programming</p>
+</header>
+
+<main>
+
+    <section>
+        <h2>1. Introduction to Deadlocks</h2>
+
+        <p>
+            A deadlock is a situation in an operating system where two
+            or more processes wait indefinitely for resources held by
+            each other. As a result, none of the processes can continue
+            execution.
+        </p>
+
+        <p>
+            Deadlocks commonly occur when multiple processes compete
+            for limited resources such as memory, files, printers,
+            or locks.
+        </p>
+    </section>
+
+    <section>
+        <h2>2. Example of a Deadlock</h2>
+
+        <div class="example">
+            <p><strong>Process P1:</strong> Holds Resource R1 and waits for R2.</p>
+            <p><strong>Process P2:</strong> Holds Resource R2 and waits for R1.</p>
+            <p>
+                Both processes wait for resources held by each other.
+                Neither can proceed, resulting in a deadlock.
+            </p>
+        </div>
+
+        <p>Resource allocation can be represented as follows:</p>
+
+        <pre>
+P1 holds R1  →  P1 requests R2
+P2 holds R2  →  P2 requests R1
+
+P1 waits for P2
+P2 waits for P1
+
+Result: DEADLOCK
+        </pre>
+    </section>
+
+    <section>
+        <h2>3. Four Necessary Conditions for Deadlock</h2>
+
+        <h3>1. Mutual Exclusion</h3>
+        <p>
+            Only one process can use a particular resource at a time.
+        </p>
+
+        <h3>2. Hold and Wait</h3>
+        <p>
+            A process holds one resource while waiting to acquire
+            another resource.
+        </p>
+
+        <h3>3. No Preemption</h3>
+        <p>
+            A resource cannot be forcibly taken away from a process.
+            It must be released voluntarily.
+        </p>
+
+        <h3>4. Circular Wait</h3>
+        <p>
+            A circular chain of processes exists in which each process
+            waits for a resource held by the next process.
+        </p>
+
+        <p>
+            A deadlock requires all four conditions to exist
+            simultaneously. Preventing any one of them can prevent
+            this type of deadlock.
+        </p>
+    </section>
+
+    <section>
+        <h2>4. Simulation of Deadlock Using C</h2>
+
+        <p>
+            Deadlock can be simulated in C using threads and mutex
+            locks. Threads represent processes, and mutex locks
+            represent shared resources.
+        </p>
+
+        <ul>
+            <li>P1 locks R1 and then requests R2.</li>
+            <li>P2 locks R2 and then requests R1.</li>
+            <li>Both threads become blocked while waiting for each other.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>5. C Program to Simulate Deadlock</h2>
+
+        <p><strong>File name:</strong> deadlock.c</p>
+
+        <pre><code>#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;unistd.h&gt;
+
+pthread_mutex_t R1 = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t R2 = PTHREAD_MUTEX_INITIALIZER;
+
+void *process1(void *arg)
+{
+    pthread_mutex_lock(&amp;R1);
+    printf("Process P1 acquired Resource R1\n");
+    fflush(stdout);
+
+    sleep(1);
+
+    printf("Process P1 waiting for Resource R2\n");
+    fflush(stdout);
+
+    pthread_mutex_lock(&amp;R2);
+
+    printf("Process P1 acquired Resource R2\n");
+
+    pthread_mutex_unlock(&amp;R2);
+    pthread_mutex_unlock(&amp;R1);
+
+    return NULL;
+}
+
+void *process2(void *arg)
+{
+    pthread_mutex_lock(&amp;R2);
+    printf("Process P2 acquired Resource R2\n");
+    fflush(stdout);
+
+    sleep(1);
+
+    printf("Process P2 waiting for Resource R1\n");
+    fflush(stdout);
+
+    pthread_mutex_lock(&amp;R1);
+
+    printf("Process P2 acquired Resource R1\n");
+
+    pthread_mutex_unlock(&amp;R1);
+    pthread_mutex_unlock(&amp;R2);
+
+    return NULL;
+}
+
+int main(void)
+{
+    pthread_t P1, P2;
+
+    pthread_create(&amp;P1, NULL, process1, NULL);
+    pthread_create(&amp;P2, NULL, process2, NULL);
+
+    pthread_join(P1, NULL);
+    pthread_join(P2, NULL);
+
+    pthread_mutex_destroy(&amp;R1);
+    pthread_mutex_destroy(&amp;R2);
+
+    return 0;
+}</code></pre>
+
+        <div class="warning">
+            <strong>Important:</strong> This program intentionally
+            creates a deadlock and may hang indefinitely. Press
+            <strong>Ctrl + C</strong> in the terminal to stop it.
+            The mutexes must not be destroyed while the threads are
+            blocked.
+        </div>
+    </section>
+
+    <section>
+        <h2>6. Compilation and Execution in VS Code</h2>
+
+        <p>Save the C program as <code>deadlock.c</code>.</p>
+
+        <h3>Step 1: Compile the program</h3>
+        <pre><code>gcc deadlock.c -o deadlock -pthread</code></pre>
+
+        <h3>Step 2: Execute the program</h3>
+        <pre><code>./deadlock</code></pre>
+
+        <p>
+            These commands work in a Linux terminal or WSL terminal
+            with GCC and pthread support installed.
+        </p>
+    </section>
+
+    <section>
+        <h2>7. Sample Output</h2>
+
+        <pre><code>Process P1 acquired Resource R1
+Process P2 acquired Resource R2
+Process P1 waiting for Resource R2
+Process P2 waiting for Resource R1</code></pre>
+
+        <p>
+            The order of the first messages may vary because thread
+            scheduling is controlled by the operating system.
+            After these messages, both threads wait indefinitely,
+            demonstrating a deadlock.
+        </p>
+    </section>
+
+    <section>
+        <h2>8. Explanation of Important Functions</h2>
+
+        <table>
+            <tr>
+                <th>Function</th>
+                <th>Purpose</th>
+            </tr>
+            <tr>
+                <td><code>pthread_create()</code></td>
+                <td>Creates a new thread representing a process.</td>
+            </tr>
+            <tr>
+                <td><code>pthread_mutex_lock()</code></td>
+                <td>Acquires a resource or waits until it becomes available.</td>
+            </tr>
+            <tr>
+                <td><code>sleep(1)</code></td>
+                <td>Pauses a thread briefly to help demonstrate the deadlock.</td>
+            </tr>
+            <tr>
+                <td><code>pthread_join()</code></td>
+                <td>Waits for a thread to finish execution.</td>
+            </tr>
+            <tr>
+                <td><code>pthread_mutex_unlock()</code></td>
+                <td>Releases a resource.</td>
+            </tr>
+            <tr>
+                <td><code>pthread_mutex_destroy()</code></td>
+                <td>Destroys a mutex after it is no longer in use.</td>
+            </tr>
+        </table>
+    </section>
+
+    <section>
+        <h2>9. Conclusion</h2>
+
+        <p>
+            Deadlock is an important operating system problem in which
+            processes wait indefinitely for resources held by one
+            another. Using threads and mutex locks in C, we can
+            simulate a deadlock and understand how resource allocation
+            can block processes.
+        </p>
+
+        <p>
+            This simulation demonstrates why operating systems need
+            deadlock prevention, avoidance, and detection techniques
+            to manage resources efficiently.
+        </p>
+    </section>
+
+</main>
+
+<footer>
+    <p>Week 4 Assignment | Operating Systems</p>
+</footer>
+
+</body>
+</html>
