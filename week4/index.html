@@ -1,133 +1,36 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deadlock Simulator</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PAMBU | Deadlock Lab</title>
 <style>
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0b1120;
-  color: #e5e7eb;
-}
-header {
-  padding: 22px 6%;
-  background: #111a2e;
-  border-bottom: 1px solid #27344b;
-}
-header h1 { margin: 0; color: #60a5fa; }
-header p { color: #9ca3af; margin-bottom: 0; }
-main { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
-h2 { font-size: 20px; }
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 18px;
-}
-.card {
-  background: #151f33;
-  border: 1px solid #2b3a52;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-.metric { color: #9ca3af; font-size: 14px; }
-.number { font-size: 30px; font-weight: bold; margin-top: 10px; }
-label { display: block; margin: 14px 0 6px; color: #cbd5e1; }
-input, select {
-  width: 100%;
-  padding: 11px;
-  background: #0b1120;
-  border: 1px solid #394963;
-  color: white;
-  border-radius: 6px;
-}
-button {
-  border: 0;
-  border-radius: 7px;
-  padding: 11px 16px;
-  margin: 12px 7px 0 0;
-  background: #3b82f6;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-.secondary { background: #334155; }
-.status { color: #34d399; }
-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-th, td { padding: 12px; text-align: left; border-bottom: 1px solid #334155; }
-th { color: #93c5fd; }
-footer { text-align: center; padding: 25px; color: #94a3b8; }
-@media(max-width: 550px) {
-  th, td { padding: 8px 4px; font-size: 12px; }
-}
-</style>
-</head>
-<body>
-<header>
-  <h1>Deadlock Simulator</h1>
-  <p>Operating System Concepts · Process & Resource Management</p>
-</header>
-
-<main>
-  <h2>Simulation Overview</h2>
-  <div class="grid">
-    <div class="card">
-      <div class="metric">Total Processes</div>
-      <div class="number">4</div>
-    </div>
-    <div class="card">
-      <div class="metric">Available Resources</div>
-      <div class="number">3</div>
-    </div>
-    <div class="card">
-      <div class="metric">System Status</div>
-      <div class="number status">Ready</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>Configure Simulation</h2>
-    <label for="processes">Number of processes</label>
-    <input id="processes" type="number" min="1" value="4">
-    <label for="resources">Number of resource types</label>
-    <input id="resources" type="number" min="1" value="3">
-    <label for="algorithm">Detection method</label>
-    <select id="algorithm">
-      <option>Deadlock Detection</option>
-      <option>Banker's Algorithm</option>
-      <option>Resource Allocation Graph</option>
-    </select>
-    <button type="button">Run Simulation</button>
-    <button type="button" class="secondary">Reset</button>
-  </div>
-
-  <div class="card">
-    <h2>Process Allocation Table</h2>
-    <table>
-      <thead>
-        <tr><th>Process</th><th>Allocated</th><th>Requested</th><th>Status</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>P0</td><td>R0</td><td>R1</td><td>Waiting</td></tr>
-        <tr><td>P1</td><td>R1</td><td>R2</td><td>Waiting</td></tr>
-        <tr><td>P2</td><td>R2</td><td>R0</td><td>Waiting</td></tr>
-        <tr><td>P3</td><td>None</td><td>R1</td><td>Ready</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="card">
-    <h2>Simulation Results</h2>
-    <p>Deadlock status: <strong>Not evaluated</strong></p>
-    <p>Safe sequence: <strong>Not evaluated</strong></p>
-    <p>Resource allocation graph: <strong>Will appear here</strong></p>
-  </div>
-</main>
-
-<footer>Week 4 Project · Deadlock Simulation UI</footer>
-</body>
-</html>
+:root{--bg:#0a0e17;--panel:#111827;--panel2:#151f30;--line:#263247;--text:#e8eef8;--muted:#8c9bb1;--blue:#76a9ff;--cyan:#66e0d0;--green:#52d6a0;--amber:#f6c66b;--red:#ff7887;--shadow:0 18px 55px #0003}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% -15%,#173052 0,transparent 38%),var(--bg);color:var(--text);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select{font:inherit}button{cursor:pointer}.shell{max-width:1400px;margin:auto;padding:0 28px 36px}.topbar{height:78px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff12;gap:18px}.brand{display:flex;align-items:center;gap:12px}.brandmark{width:40px;height:40px;border-radius:12px;background:linear-gradient(145deg,#8db9ff,#4c79e8);display:grid;place-items:center;color:#071426;font-weight:900;font-size:19px;box-shadow:0 7px 24px #5285ff30}.brand h1{font-size:17px;letter-spacing:.13em;margin:0}.brand small{display:block;color:var(--muted);font-size:11px;letter-spacing:.04em}.top-right{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px}.live{display:flex;align-items:center;gap:7px;border:1px solid #2b4d48;border-radius:999px;padding:7px 11px;color:#9cebd6;background:#102622}.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px #52d6a088}.hero{display:flex;align-items:end;justify-content:space-between;padding:32px 0 23px;gap:20px}.eyebrow{font-size:11px;color:var(--blue);font-weight:750;letter-spacing:.16em;text-transform:uppercase}.hero h2{font-size:clamp(25px,3vw,36px);letter-spacing:-.045em;line-height:1.1;margin:8px 0}.hero p{margin:0;color:var(--muted);max-width:600px}.hero-tag{border:1px solid var(--line);background:#101725;border-radius:10px;padding:10px 13px;color:#a8b7cc;font-size:12px;white-space:nowrap}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}.metric,.panel{border:1px solid var(--line);background:linear-gradient(145deg,#141e2d,#101622);border-radius:15px;box-shadow:var(--shadow)}.metric{padding:17px 18px;position:relative;overflow:hidden}.metric:after{content:"";position:absolute;width:75px;height:75px;border-radius:50%;right:-30px;top:-35px;background:#76a9ff0d}.metric-label{font-size:12px;color:var(--muted)}.metric-value{font-size:27px;font-weight:750;letter-spacing:-.04em;margin-top:6px}.metric-note{font-size:11px;color:#8292aa;margin-top:3px}.layout{display:grid;grid-template-columns:minmax(280px,.82fr) minmax(0,1.7fr);gap:18px;align-items:start}.panel{padding:20px;margin-bottom:18px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:17px}.panel-head h3{margin:0;font-size:15px;letter-spacing:-.01em}.panel-head p{color:var(--muted);font-size:12px;margin:4px 0 0}.step{font-size:10px;color:#9db9ec;background:#1a2c48;border-radius:6px;padding:5px 7px;letter-spacing:.08em}.field{margin:14px 0}.field label{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:#b5c2d5;margin-bottom:7px}.field input,.field select{width:100%;background:#0b111c;color:var(--text);border:1px solid #2b394e;border-radius:9px;padding:11px 12px;outline:none}.field input:focus,.field select:focus{border-color:#6f9fff;box-shadow:0 0 0 3px #6f9fff18}.hint{font-size:11px;color:#7889a1;margin-top:6px}.actions{display:flex;gap:9px;margin-top:19px}.btn{border:1px solid transparent;border-radius:9px;padding:11px 14px;font-weight:700;font-size:12px;transition:.15s}.btn-primary{background:var(--blue);color:#071426;flex:1}.btn-primary:hover{background:#a2c4ff;transform:translateY(-1px)}.btn-secondary{background:#1b2637;color:#d3dced;border-color:#304058}.btn-secondary:hover{background:#26364c}.note{margin-top:15px;border:1px solid #2c405b;background:#101b2a;border-radius:10px;padding:12px;color:#9cacc2;font-size:11px}.note b{color:#d8e6ff}.result-banner{display:flex;align-items:center;gap:12px;padding:14px 15px;border-radius:11px;border:1px solid #2a4a43;background:#10251f;margin-bottom:17px}.result-icon{width:35px;height:35px;border-radius:10px;background:#1b4035;color:var(--green);display:grid;place-items:center;font-size:17px}.result-banner strong{display:block;font-size:13px}.result-banner span{display:block;color:#9bb6ad;font-size:11px;margin-top:2px}.result-banner.warning{border-color:#60404a;background:#28171e}.result-banner.warning .result-icon{background:#47232c;color:var(--red)}.result-banner.warning span{color:#d1a3aa}.table-wrap{overflow:auto;border:1px solid #27364a;border-radius:10px}table{width:100%;border-collapse:collapse;min-width:490px;font-size:12px}th{background:#172235;color:#8fa6c7;text-transform:uppercase;font-size:10px;letter-spacing:.08em;font-weight:700}td,th{padding:12px 13px;text-align:left;border-bottom:1px solid #263247}tbody tr:last-child td{border-bottom:0}tbody tr:hover{background:#ffffff04}.pid{color:#91baff;font-weight:750}.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:750;background:#172c28;color:#77e1b5}.pill.wait{background:#30271a;color:var(--amber)}.pill.dead{background:#351f28;color:var(--red)}.section-row{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px}.section-row h4{font-size:12px;margin:0;color:#d4deec}.legend{font-size:10px;color:var(--muted)}.graph{min-height:190px;border:1px solid #27364a;background:radial-gradient(ellipse at center,#142238,#0e1521 70%);border-radius:11px;display:flex;align-items:center;justify-content:center;padding:18px;overflow:hidden}.graph svg{width:100%;max-height:245px;min-width:300px}.empty{color:var(--muted);font-size:12px;text-align:center}.sequence{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:11px}.seq{border:1px solid #2b4b44;background:#122822;color:#8ce6c1;padding:7px 10px;border-radius:8px;font-size:11px;font-weight:700}.arrow{color:#60738d}.footer{display:flex;justify-content:space-between;gap:12px;padding:12px 2px;color:#62738b;font-size:11px}.small-muted{font-size:11px;color:var(--muted)}@media(max-width:900px){.layout{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{align-items:start;flex-direction:column}.hero-tag{white-space:normal}}@media(max-width:520px){.shell{padding:0 14px 24px}.topbar{height:68px}.top-right .top-label{display:none}.metrics{gap:9px}.metric{padding:13px}.metric-value{font-size:23px}.panel{padding:15px}.hero{padding-top:25px}.footer{flex-direction:column}}
+</style></head>
+<body><div class="shell">
+<header class="topbar"><div class="brand"><div class="brandmark">P</div><div><h1>PAMBU <span style="color:#7891b4;font-weight:400">/ LAB</span></h1><small>PROCESS & RESOURCE MANAGEMENT</small></div></div><div class="top-right"><span class="top-label">OPERATING SYSTEMS PROJECT</span><div class="live"><i class="dot"></i> Simulator ready</div></div></header>
+<section class="hero"><div><div class="eyebrow">WEEK 04 · DEADLOCK ANALYSIS</div><h2>Deadlock Simulation Lab</h2><p>Configure processes and resources, run a safety check, and inspect how resource allocation affects system progress.</p></div><div class="hero-tag">● Interactive local demo</div></section>
+<section class="metrics"><div class="metric"><div class="metric-label">Processes</div><div class="metric-value" id="mProcesses">4</div><div class="metric-note">Active process set</div></div><div class="metric"><div class="metric-label">Resource types</div><div class="metric-value" id="mResources">3</div><div class="metric-note">Distinct resource classes</div></div><div class="metric"><div class="metric-label">Safe sequence</div><div class="metric-value" id="mSequence">—</div><div class="metric-note">Processes able to finish</div></div><div class="metric"><div class="metric-label">System state</div><div class="metric-value" id="mState" style="color:var(--amber);font-size:22px">Not run</div><div class="metric-note" id="mStateNote">Awaiting analysis</div></div></section>
+<div class="layout"><aside><section class="panel"><div class="panel-head"><div><h3>Simulation setup</h3><p>Choose the scenario to analyze.</p></div><span class="step">01 / SETUP</span></div><div class="field"><label for="processes">Number of processes <span>1–8</span></label><input id="processes" type="number" min="1" max="8" value="4"></div><div class="field"><label for="resources">Resource types <span>1–5</span></label><input id="resources" type="number" min="1" max="5" value="3"></div><div class="field"><label for="scenario">Scenario preset</label><select id="scenario"><option value="safe">Safe execution</option><option value="deadlock">Circular wait / deadlock</option><option value="mixed">Mixed resource pressure</option></select><div class="hint">Presets generate a repeatable example allocation matrix.</div></div><div class="field"><label for="algorithm">Analysis algorithm</label><select id="algorithm"><option value="banker">Banker's safety algorithm</option><option value="detection">Deadlock detection (demo)</option></select></div><div class="actions"><button class="btn btn-primary" id="runBtn">▶ Run simulation</button><button class="btn btn-secondary" id="resetBtn">Reset</button></div><div class="note"><b>How it works</b><br>Banker's algorithm checks whether processes can finish in an order that never exceeds available resources. This is an educational, client-side demonstration.</div></section></aside>
+<main><section class="panel"><div class="panel-head"><div><h3>Analysis result</h3><p id="resultSub">Run the simulation to evaluate the selected scenario.</p></div><span class="step">02 / STATUS</span></div><div class="result-banner" id="banner"><div class="result-icon" id="bannerIcon">↗</div><div><strong id="bannerTitle">Ready to analyze</strong><span id="bannerText">Choose a preset and run the simulation.</span></div></div><div class="section-row"><h4>Process allocation matrix</h4><span class="legend">Allocated / Maximum / Need</span></div><div class="table-wrap"><table id="matrix"><thead><tr><th>Process</th><th>Allocated</th><th>Maximum</th><th>Need</th><th>Status</th></tr></thead><tbody><tr><td colspan="5" class="empty">Run simulation to generate matrix</td></tr></tbody></table></div></section>
+<section class="panel"><div class="panel-head"><div><h3>Resource availability</h3><p>Instances not currently allocated to a process.</p></div><span class="step">03 / RESOURCES</span></div><div id="available" class="sequence"><span class="small-muted">Run simulation to see available resources.</span></div></section>
+<section class="panel"><div class="panel-head"><div><h3>Execution sequence</h3><p>One valid order for processes to complete, if one exists.</p></div><span class="step">04 / TRACE</span></div><div id="sequence" class="sequence"><span class="small-muted">No sequence computed yet.</span></div><div style="height:16px"></div><div class="section-row"><h4>Resource allocation overview</h4><span class="legend">Illustrative flow</span></div><div class="graph" id="graph"><div class="empty">The resource flow visualization will appear after analysis.</div></div></section></main></div>
+<footer class="footer"><span>PAMBU · Operating Systems Project</span><span>Deadlock Lab <span style="color:#344760">/</span> Front-end simulation</span></footer></div>
+<script>
+const $=id=>document.getElementById(id);let last=null;
+function clampInput(id,min,max){let el=$(id),n=Number.parseInt(el.value,10);if(!Number.isFinite(n))n=min;n=Math.max(min,Math.min(max,n));el.value=n;return n}
+function makeData(p,r,scenario){const total=Array(r).fill(3);let alloc=Array.from({length:p},()=>Array(r).fill(0)),max=Array.from({length:p},()=>Array(r).fill(0));
+// Repeatable, small matrices that illustrate safe and unsafe resource states.
+for(let i=0;i<p;i++)for(let j=0;j<r;j++){alloc[i][j]=((i*2+j+(scenario==='deadlock'?1:0))%4===0)?1:0;max[i][j]=Math.min(total[j],alloc[i][j]+(((i+j)%3===0)?2:1));}
+if(scenario==='deadlock'&&p>1&&r>0){for(let i=0;i<p;i++){alloc[i]=Array(r).fill(0);max[i]=Array(r).fill(0);alloc[i][i%r]=1;max[i][i%r]=1;if(r>1)max[i][(i+1)%r]=1;}for(let j=0;j<r;j++)total[j]=Math.max(1,Math.min(2,p));}
+if(scenario==='safe'){for(let j=0;j<r;j++)total[j]=Math.max(3,p+1);}
+if(scenario==='mixed'){for(let j=0;j<r;j++)total[j]=Math.max(2,Math.ceil(p/2));}
+// Ensure maximum claims are within total instances.
+for(let i=0;i<p;i++)for(let j=0;j<r;j++)max[i][j]=Math.min(total[j],Math.max(alloc[i][j],max[i][j]));
+const used=Array(r).fill(0);for(let i=0;i<p;i++)for(let j=0;j<r;j++)used[j]+=alloc[i][j];for(let j=0;j<r;j++)if(used[j]>total[j])total[j]=used[j];const avail=total.map((x,j)=>x-used[j]);const need=max.map((row,i)=>row.map((x,j)=>Math.max(0,x-alloc[i][j])));return{p,r,total,alloc,max,need,avail};}
+function analyze(d,algo){let work=d.avail.slice(),finish=Array(d.p).fill(false),seq=[];let changed=true;while(changed){changed=false;for(let i=0;i<d.p;i++){if(finish[i])continue;let can=d.need[i].every((n,j)=>n<=work[j]);if(can){work=work.map((v,j)=>v+d.alloc[i][j]);finish[i]=true;seq.push(i);changed=true;}}}return{safe:finish.every(Boolean),seq,finish,remaining:finish.map((v,i)=>v?null:i).filter(v=>v!==null)};}
+function renderGraph(d,a){let w=620,h=190,processes=d.p,resources=d.r,px=105,rx=500,top=27,step=Math.min(36,136/Math.max(processes,resources));let nodes='',edges='';for(let i=0;i<processes;i++){let y=top+i*step;nodes+=`<rect x="${px-37}" y="${y-12}" width="74" height="24" rx="7" fill="${a.finish[i]?'#17392f':'#30212a'}" stroke="${a.finish[i]?'#3e9275':'#9d5363'}"/><text x="${px}" y="${y+4}" text-anchor="middle" font-size="11" font-weight="700" fill="${a.finish[i]?'#8de6c1':'#ff9ba7'}">P${i}</text>`;for(let j=0;j<resources;j++){if(d.alloc[i][j]>0){let ry=top+j*step;edges+=`<path d="M ${px+38} ${y} C 230 ${y}, 360 ${ry}, ${rx-39} ${ry}" fill="none" stroke="#6c9be0" stroke-opacity=".65" stroke-width="${1+d.alloc[i][j]}"/>`;}}}for(let j=0;j<resources;j++){let y=top+j*step;nodes+=`<rect x="${rx-39}" y="${y-12}" width="78" height="24" rx="7" fill="#182b42" stroke="#4974aa"/><text x="${rx}" y="${y+4}" text-anchor="middle" font-size="11" font-weight="700" fill="#9dc4ff">R${j}</text>`;}return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Process to resource allocation diagram"><text x="${px}" y="13" text-anchor="middle" fill="#8298b8" font-size="10">PROCESSES</text><text x="${rx}" y="13" text-anchor="middle" fill="#8298b8" font-size="10">RESOURCES</text>${edges}${nodes}<text x="310" y="181" text-anchor="middle" fill="#6f819b" font-size="10">Lines indicate allocated resource instances · illustrative view</text></svg>`;}
+function run(){const p=clampInput('processes',1,8),r=clampInput('resources',1,5),scenario=$('scenario').value,algo=$('algorithm').value,d=makeData(p,r,scenario),a=analyze(d,algo);last={d,a};$('mProcesses').textContent=p;$('mResources').textContent=r;$('mSequence').textContent=`${a.seq.length}/${p}`;$('mState').textContent=a.safe?'SAFE':'UNSAFE';$('mState').style.color=a.safe?'var(--green)':'var(--red)';$('mStateNote').textContent=a.safe?'All processes can finish':'Some processes cannot finish';$('banner').classList.toggle('warning',!a.safe);$('bannerIcon').textContent=a.safe?'✓':'!';$('bannerTitle').textContent=a.safe?'Safe state detected':'Unsafe state detected';$('bannerText').textContent=a.safe?'A completion order exists for every process.':'No complete safe sequence was found for this allocation.';$('resultSub').textContent=`${algo==='banker'?"Banker's safety algorithm":"Deadlock detection demo"} · ${scenario==='safe'?'Safe execution':scenario==='deadlock'?'Circular wait / deadlock':'Mixed resource pressure'}`;
+$('matrix').querySelector('tbody').innerHTML=d.alloc.map((row,i)=>`<tr><td class="pid">P${i}</td><td>${row.join(' · ')}</td><td>${d.max[i].join(' · ')}</td><td>${d.need[i].join(' · ')}</td><td><span class="pill ${a.finish[i]?'':'dead'}">${a.finish[i]?'Can finish':'Blocked'}</span></td></tr>`).join('');$('available').innerHTML=d.avail.map((v,j)=>`<span class="seq">R${j}<span style="color:#fff;margin-left:6px">${v}</span> available</span>`).join('');$('sequence').innerHTML=a.seq.length?a.seq.map((v,i)=>`${i?'<span class="arrow">→</span>':''}<span class="seq">P${v}</span>`).join('')+(a.safe?'':'<span class="pill dead">Incomplete</span>'):`<span class="pill dead">No safe process can start</span>`;$('graph').innerHTML=renderGraph(d,a);}
+function reset(){ $('processes').value=4;$('resources').value=3;$('scenario').value='safe';$('algorithm').value='banker';last=null;$('mProcesses').textContent='4';$('mResources').textContent='3';$('mSequence').textContent='—';$('mState').textContent='Not run';$('mState').style.color='var(--amber)';$('mStateNote').textContent='Awaiting analysis';$('banner').classList.remove('warning');$('bannerIcon').textContent='↗';$('bannerTitle').textContent='Ready to analyze';$('bannerText').textContent='Choose a preset and run the simulation.';$('resultSub').textContent='Run the simulation to evaluate the selected scenario.';$('matrix').querySelector('tbody').innerHTML='<tr><td colspan="5" class="empty">Run simulation to generate matrix</td></tr>';$('available').innerHTML='<span class="small-muted">Run simulation to see available resources.</span>';$('sequence').innerHTML='<span class="small-muted">No sequence computed yet.</span>';$('graph').innerHTML='<div class="empty">The resource flow visualization will appear after analysis.</div>';}
+$('runBtn').addEventListener('click',run);$('resetBtn').addEventListener('click',reset);$('processes').addEventListener('change',()=>clampInput('processes',1,8));$('resources').addEventListener('change',()=>clampInput('resources',1,5));
+</script></body></html>
