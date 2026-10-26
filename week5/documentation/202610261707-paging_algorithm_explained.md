@@ -16,3 +16,11 @@ Belady's anomaly.. I don't get it.
 It was always about balancing *compute resource* with *accuracy*
 
 - Jack the OOM killer.
+
+
+## The planning:
+- I want a gui
+- We use tkinter as gui frontend. sockets in c as backend.
+- I had to run `xbps-install python3-tkinter` to get the things installed. So.. I guess no uv needed.
+- I created `runit.sh` for fun.
+
