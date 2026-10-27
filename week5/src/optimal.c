@@ -151,6 +151,7 @@ void simulate_optimal(const AlgoInput *in, SimResult *out)
             }
         }
 
+        
         /* Save the frame snapshot after processing this reference. */
         step->frame_count = nf; 
 
