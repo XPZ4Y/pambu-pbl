@@ -16,7 +16,7 @@ static AlgoInput mk(const int *refs, int n, int frames) {
     return in;
 }
 
-/* Classic 3-frame LRU on 1..12 sequence → 10 faults / 2 hits. */
+/* Classic 3-frame LRU on 1..12 sequence → 10 faults/2 hits. */
 static void test_classic_3frame(void) {
     const int refs[] = {1,2,3,4,1,2,5,1,2,3,4,5};
     AlgoInput in = mk(refs, 12, 3);
@@ -75,6 +75,7 @@ static void test_minimal(void) {
     CHECK(r.steps[0].victim_frame == -1);
 }
 
+#lets
 int main(void) {
     test_classic_3frame();
     test_all_hits();
