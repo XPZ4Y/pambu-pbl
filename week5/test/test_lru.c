@@ -75,7 +75,6 @@ static void test_minimal(void) {
     CHECK(r.steps[0].victim_frame == -1);
 }
 
-#lets
 int main(void) {
     test_classic_3frame();
     test_all_hits();
