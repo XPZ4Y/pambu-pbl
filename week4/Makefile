@@ -1,11 +1,13 @@
-CC       := gcc
-CFLAGS   := -Wall -Wextra -std=c11 -O2 -Iinclude -Isrc
-LDFLAGS  := -lm
-SRC_DIR  := src
-TEST_DIR := test
-OBJ_DIR  := build/obj
-BIN_DIR  := build/bin
+BUILD_DIR := build
 
-MAIN_SRC	:= $(SRC_DIR)/orchestrate.c
-MAIN_OBJ	:= $(OBJ_DIR)/orchestrate.h
-TARGET		:= $(BIN_DIR)/orchestrate
+.PHONY: build test clean
+
+build:
+	cmake -S . -B $(BUILD_DIR)
+	cmake --build $(BUILD_DIR)
+
+test: build
+	ctest --test-dir $(BUILD_DIR) --output-on-failure
+
+clean:
+	cmake -E rm -rf $(BUILD_DIR)
